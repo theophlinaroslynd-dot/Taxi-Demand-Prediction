@@ -1,6 +1,6 @@
 \# 🚕 Taxi Demand Prediction
 
-
+![Taxi Demand Prediction Dashboard](project-dashboard.png)
 
 A machine learning project that predicts taxi demand based on \*\*time and pickup location\*\* using real-world NYC Yellow Taxi trip data.
 
