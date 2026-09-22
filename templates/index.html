@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>TaxiPredict | Taxi Demand Prediction</title>
+
+
+    <style>
+
+        /* =================================================
+           GENERAL
+        ================================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef8ff,
+                    #f7fbff,
+                    #eaf5ff
+                );
+
+            color: #17295c;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =================================================
+           BUBBLES
+        ================================================= */
+
+        .bubble {
+
+            position: fixed;
+
+            border-radius: 50%;
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.65
+            );
+
+            z-index: -1;
+
+        }
+
+
+        .bubble.one {
+
+            width: 180px;
+            height: 180px;
+
+            top: -70px;
+            left: -40px;
+
+        }
+
+
+        .bubble.two {
+
+            width: 120px;
+            height: 120px;
+
+            top: 280px;
+            right: 30px;
+
+        }
+
+
+        .bubble.three {
+
+            width: 80px;
+            height: 80px;
+
+            bottom: 100px;
+            left: 30px;
+
+        }
+
+
+        .bubble.four {
+
+            width: 160px;
+            height: 160px;
+
+            bottom: -70px;
+            right: -40px;
+
+        }
+
+
+        /* =================================================
+           MAIN CONTAINER
+        ================================================= */
+
+        .container {
+
+            width: 94%;
+
+            max-width: 1500px;
+
+            margin: auto;
+
+            padding: 35px 0 70px;
+
+        }
+
+
+        /* =================================================
+           HERO
+        ================================================= */
+
+        .hero {
+
+            text-align: center;
+
+            padding: 25px 20px 35px;
+
+        }
+
+
+        .badge {
+
+            display: inline-block;
+
+            background: white;
+
+            padding: 12px 22px;
+
+            border-radius: 30px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(55, 120, 220, 0.12);
+
+            font-weight: 600;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .hero h1 {
+
+            font-size: clamp(
+                42px,
+                6vw,
+                72px
+            );
+
+            line-height: 1.1;
+
+            font-weight: 800;
+
+            color: #182b63;
+
+        }
+
+
+        .hero h1 span {
+
+            color: #2868ed;
+
+        }
+
+
+        .hero p {
+
+            margin: 22px auto 0;
+
+            max-width: 800px;
+
+            font-size: 19px;
+
+            line-height: 1.6;
+
+            color: #607495;
+
+        }
+
+
+        /* =================================================
+           STAT CARDS
+        ================================================= */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .stat-card {
+
+            background:
+                rgba(255,255,255,0.92);
+
+            border-radius: 28px;
+
+            padding: 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(40, 104, 237, 0.10);
+
+        }
+
+
+        .stat-icon {
+
+            width: 60px;
+            height: 60px;
+
+            border-radius: 50%;
+
+            background: #e2f2ff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 27px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .stat-title {
+
+            font-size: 14px;
+
+            color: #70819e;
+
+        }
+
+
+        .stat-value {
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            margin: 4px 0;
+
+        }
+
+
+        .stat-sub {
+
+            color: #70819e;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =================================================
+           PREDICTION SECTION
+        ================================================= */
+
+        .prediction-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 28px;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .card {
+
+            background:
+                rgba(255,255,255,0.94);
+
+            border-radius: 30px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 18px 45px
+                rgba(40, 104, 237, 0.10);
+
+        }
+
+
+        .card-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .heading-icon {
+
+            width: 55px;
+            height: 55px;
+
+            border-radius: 50%;
+
+            background: #fff1b8;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 25px;
+
+        }
+
+
+        .card-heading h2 {
+
+            font-size: 28px;
+
+        }
+
+
+        .card-heading p {
+
+            margin-top: 5px;
+
+            color: #71819c;
+
+        }
+
+
+        /* =================================================
+           FORM
+        ================================================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+
+        }
+
+
+        .field label {
+
+            display: block;
+
+            font-weight: 700;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .field input,
+        .field select {
+
+            width: 100%;
+
+            padding: 16px;
+
+            border: 2px solid #dce6f4;
+
+            border-radius: 18px;
+
+            background: white;
+
+            font-size: 16px;
+
+            color: #17295c;
+
+            outline: none;
+
+        }
+
+
+        .field input:focus,
+        .field select:focus {
+
+            border-color: #4386ef;
+
+        }
+
+
+        .predict-button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 17px;
+
+            border: none;
+
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #4386ef,
+                    #2868ed
+                );
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 12px 25px
+                rgba(40,104,237,0.25);
+
+            transition: 0.2s;
+
+        }
+
+
+        .predict-button:hover {
+
+            transform: translateY(-2px);
+
+        }
+
+
+        /* =================================================
+           PREDICTION RESULT
+        ================================================= */
+
+        .result-area {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 30px;
+
+            min-height: 270px;
+
+        }
+
+
+        .prediction-circle {
+
+            width: 220px;
+            height: 220px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #ffffff,
+                    #e9f8ff
+                );
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            box-shadow:
+                0 15px 40px
+                rgba(40,104,237,0.10);
+
+            flex-shrink: 0;
+
+        }
+
+
+        .prediction-label {
+
+            color: #70819e;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .prediction-number {
+
+            font-size: 64px;
+
+            font-weight: 900;
+
+            color: #13a64a;
+
+            line-height: 1;
+
+        }
+
+
+        .prediction-unit {
+
+            margin-top: 8px;
+
+            font-weight: 800;
+
+        }
+
+
+        .insight {
+
+            background: #eafff4;
+
+            padding: 22px;
+
+            border-radius: 22px;
+
+            max-width: 330px;
+
+        }
+
+
+        .insight h3 {
+
+            color: #13723e;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .insight p {
+
+            color: #51677a;
+
+            line-height: 1.5;
+
+        }
+
+
+        .demand-badge {
+
+            display: inline-block;
+
+            margin-top: 12px;
+
+            padding: 7px 15px;
+
+            border-radius: 20px;
+
+            background: #ffffff;
+
+            font-weight: 800;
+
+            color: #13723e;
+
+        }
+
+
+        /* =================================================
+           VISUALIZATION SECTION
+        ================================================= */
+
+        .section-title {
+
+            margin: 40px 0 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .section-title-icon {
+
+            width: 55px;
+            height: 55px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 26px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(40,104,237,0.10);
+
+        }
+
+
+        .section-title h2 {
+
+            font-size: 30px;
+
+        }
+
+
+        .section-title p {
+
+            color: #71819c;
+
+            margin-top: 4px;
+
+        }
+
+
+        .charts {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 28px;
+
+        }
+
+
+        .chart-card {
+
+            background:
+                rgba(255,255,255,0.94);
+
+            border-radius: 30px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 18px 45px
+                rgba(40,104,237,0.10);
+
+        }
+
+
+        .chart-card h3 {
+
+            font-size: 22px;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .chart-card > p {
+
+            color: #71819c;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* =================================================
+           BAR CHART
+        ================================================= */
+
+        .bar-chart {
+
+            height: 300px;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 7px;
+
+            padding:
+                10px 5px 0;
+
+            border-bottom:
+                2px solid #dce6f4;
+
+        }
+
+
+        .bar-wrapper {
+
+            flex: 1;
+
+            height: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: flex-end;
+
+            align-items: center;
+
+            min-width: 0;
+
+        }
+
+
+        .bar {
+
+            width: 75%;
+
+            max-width: 32px;
+
+            min-height: 3px;
+
+            border-radius:
+                12px 12px 3px 3px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #83baff,
+                    #4386ef
+                );
+
+            transition: 0.25s;
+
+        }
+
+
+        .bar:hover {
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffd44f,
+                    #ffb900
+                );
+
+        }
+
+
+        .bar-value {
+
+            font-size: 9px;
+
+            color: #687b99;
+
+            margin-bottom: 5px;
+
+            white-space: nowrap;
+
+        }
+
+
+        .bar-label {
+
+            font-size: 11px;
+
+            color: #607495;
+
+            margin-top: 8px;
+
+        }
+
+
+        /* =================================================
+           LOCATION CHART
+        ================================================= */
+
+        .location-chart {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 13px;
+
+        }
+
+
+        .location-row {
+
+            display: grid;
+
+            grid-template-columns:
+                55px 1fr 75px;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .location-id {
+
+            font-weight: 800;
+
+            font-size: 14px;
+
+        }
+
+
+        .location-track {
+
+            height: 17px;
+
+            background: #eaf0f7;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .location-fill {
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #76b3ff,
+                    #2868ed
+                );
+
+        }
+
+
+        .location-value {
+
+            text-align: right;
+
+            font-size: 13px;
+
+            color: #617493;
+
+        }
+
+
+        /* =================================================
+           ML MODEL VISUAL
+        ================================================= */
+
+        .model-card {
+
+            background:
+                rgba(255,255,255,0.94);
+
+            border-radius: 30px;
+
+            padding: 40px;
+
+            box-shadow:
+                0 18px 45px
+                rgba(40,104,237,0.10);
+
+        }
+
+
+        .model-flow {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 80px 1.4fr 80px 1fr;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .flow-title {
+
+            text-align: center;
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .features {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        .feature-pill {
+
+            background: #eff6ff;
+
+            border: 1px solid #dceaff;
+
+            padding: 12px 18px;
+
+            border-radius: 25px;
+
+            text-align: center;
+
+        }
+
+
+        .arrow {
+
+            font-size: 40px;
+
+            text-align: center;
+
+            color: #4386ef;
+
+        }
+
+
+        .trees {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+        }
+
+
+        .tree {
+
+            width: 95px;
+
+            height: 110px;
+
+            border-radius: 20px;
+
+            background: #effff5;
+
+            border: 1px solid #c6f2d7;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .tree-icon {
+
+            font-size: 38px;
+
+        }
+
+
+        .tree span {
+
+            margin-top: 5px;
+
+            font-weight: 700;
+
+            color: #617493;
+
+        }
+
+
+        .model-description {
+
+            text-align: center;
+
+            color: #71819c;
+
+            font-size: 13px;
+
+            margin-top: 15px;
+
+        }
+
+
+        .final-result {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+        .final-circle {
+
+            width: 150px;
+            height: 150px;
+
+            border-radius: 50%;
+
+            background: #fff7d7;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+        .final-number {
+
+            font-size: 42px;
+
+            font-weight: 900;
+
+            color: #e6a900;
+
+        }
+
+
+        .final-result p {
+
+            color: #617493;
+
+            margin-top: 5px;
+
+        }
+
+
+        /* =================================================
+           FEATURE IMPORTANCE
+        ================================================= */
+
+        .importance-card {
+
+            background:
+                rgba(255,255,255,0.94);
+
+            border-radius: 30px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 18px 45px
+                rgba(40,104,237,0.10);
+
+        }
+
+
+        .importance-row {
+
+            display: grid;
+
+            grid-template-columns:
+                170px 1fr 75px;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin: 20px 0;
+
+        }
+
+
+        .importance-name {
+
+            font-weight: 700;
+
+        }
+
+
+        .importance-track {
+
+            height: 16px;
+
+            background: #eaf0f7;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .importance-fill {
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #65a9ff,
+                    #2868ed
+                );
+
+        }
+
+
+        .importance-value {
+
+            text-align: right;
+
+            color: #2868ed;
+
+            font-weight: 800;
+
+        }
+
+
+        /* =================================================
+           FOOTER
+        ================================================= */
+
+        footer {
+
+            text-align: center;
+
+            margin-top: 50px;
+
+            color: #71819c;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+            .prediction-grid,
+            .charts {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .model-flow {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .arrow {
+
+                transform:
+                    rotate(90deg);
+
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .container {
+
+                width: 92%;
+
+            }
+
+            .stats {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .result-area {
+
+                flex-direction: column;
+
+            }
+
+            .location-row {
+
+                grid-template-columns:
+                    45px 1fr 65px;
+
+            }
+
+            .importance-row {
+
+                grid-template-columns:
+                    110px 1fr 60px;
+
+                gap: 8px;
+
+            }
+
+            .card,
+            .chart-card,
+            .model-card,
+            .importance-card {
+
+                padding: 22px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- Background bubbles -->
+
+    <div class="bubble one"></div>
+    <div class="bubble two"></div>
+    <div class="bubble three"></div>
+    <div class="bubble four"></div>
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+            <div class="badge">
+
+                🚕 Real Data
+                &nbsp; • &nbsp;
+                🧠 Machine Learning
+
+            </div>
+
+
+            <h1>
+
+                Taxi Demand
+                <span>Prediction</span>
+
+            </h1>
+
+
+            <p>
+
+                Predict taxi demand using real NYC taxi
+                trip data and a trained Random Forest
+                Machine Learning model.
+
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STAT CARDS
+        ================================================== -->
+
+        <section class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🧠
+                </div>
+
+                <div>
+
+                    <div class="stat-title">
+                        Machine Learning Model
+                    </div>
+
+                    <div class="stat-value">
+                        Random Forest
+                    </div>
+
+                    <div class="stat-sub">
+                        Trained Model
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🗄️
+                </div>
+
+                <div>
+
+                    <div class="stat-title">
+                        Training Data
+                    </div>
+
+                    <div class="stat-value">
+                        Jan 2025
+                    </div>
+
+                    <div class="stat-sub">
+                        NYC Yellow Taxi
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🎯
+                </div>
+
+                <div>
+
+                    <div class="stat-title">
+                        Model Performance
+                    </div>
+
+                    <div class="stat-value">
+                        {{ model_accuracy }}%
+                    </div>
+
+                    <div class="stat-sub">
+                        R² Score
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <div class="stat-title">
+                        Pickup Locations
+                    </div>
+
+                    <div class="stat-value">
+                        265
+                    </div>
+
+                    <div class="stat-sub">
+                        NYC Zones
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             PREDICTION
+        ================================================== -->
+
+        <section class="prediction-grid">
+
+
+            <!-- INPUT CARD -->
+
+            <div class="card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon">
+                        🚕
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Enter Trip Details
+                        </h2>
+
+                        <p>
+                            Tell the model when and where
+                            to predict demand.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <form method="POST">
+
+
+                    <div class="form-grid">
+
+
+                        <!-- HOUR -->
+
+                        <div class="field">
+
+                            <label>
+                                🕐 Hour of Day
+                            </label>
+
+                            <select
+                                name="hour"
+                                required
+                            >
+
+                                <option value="">
+                                    Select hour
+                                </option>
+
+                                {% for hour in range(24) %}
+
+                                <option
+                                    value="{{ hour }}"
+                                    {% if selected_hour == hour %}
+                                    selected
+                                    {% endif %}
+                                >
+
+                                    {{ "%02d"|format(hour) }}:00
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- DAY -->
+
+                        <div class="field">
+
+                            <label>
+                                🗓️ Day of Week
+                            </label>
+
+                            <select
+                                name="day"
+                                required
+                            >
+
+                                <option value="">
+                                    Select day
+                                </option>
+
+
+                                <option
+                                    value="0"
+                                    {% if selected_day == 0 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Monday
+                                </option>
+
+
+                                <option
+                                    value="1"
+                                    {% if selected_day == 1 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Tuesday
+                                </option>
+
+
+                                <option
+                                    value="2"
+                                    {% if selected_day == 2 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Wednesday
+                                </option>
+
+
+                                <option
+                                    value="3"
+                                    {% if selected_day == 3 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Thursday
+                                </option>
+
+
+                                <option
+                                    value="4"
+                                    {% if selected_day == 4 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Friday
+                                </option>
+
+
+                                <option
+                                    value="5"
+                                    {% if selected_day == 5 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Saturday
+                                </option>
+
+
+                                <option
+                                    value="6"
+                                    {% if selected_day == 6 %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Sunday
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- DATE -->
+
+                        <div class="field">
+
+                            <label>
+                                📅 Day of Month
+                            </label>
+
+                            <input
+                                type="number"
+                                name="date"
+                                min="1"
+                                max="31"
+                                placeholder="1 - 31"
+                                value="{{ selected_date or '' }}"
+                                required
+                            >
+
+                        </div>
+
+
+
+                        <!-- LOCATION -->
+
+                        <div class="field">
+
+                            <label>
+                                📍 Pickup Location
+                            </label>
+
+                            <input
+                                type="number"
+                                name="location"
+                                min="1"
+                                max="265"
+                                placeholder="NYC Location ID"
+                                value="{{ selected_location or '' }}"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <button
+                        class="predict-button"
+                        type="submit"
+                    >
+
+                        ✨ Predict Demand
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+
+
+            <!-- RESULT CARD -->
+
+            <div class="card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon">
+                        🔮
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Prediction Result
+                        </h2>
+
+                        <p>
+                            Output from the trained
+                            Random Forest model.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="result-area">
+
+
+                    <div class="prediction-circle">
+
+                        <div class="prediction-label">
+                            Predicted Taxi Trips
+                        </div>
+
+
+                        <div class="prediction-number">
+
+                            {% if prediction is not none %}
+
+                                {{ prediction }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="prediction-unit">
+                            predicted trips
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="insight">
+
+                        <h3>
+                            💡 Smart Insight
+                        </h3>
+
+
+                        {% if insight %}
+
+                        <p>
+                            {{ insight }}
+                        </p>
+
+
+                        <div class="demand-badge">
+                            {{ demand_level }} Demand
+                        </div>
+
+
+                        {% else %}
+
+                        <p>
+                            Enter trip details to receive
+                            a prediction and demand analysis.
+                        </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             DATA VISUALIZATION
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                📊
+            </div>
+
+            <div>
+
+                <h2>
+                    Explore the Taxi Data
+                </h2>
+
+                <p>
+                    Visual patterns discovered from
+                    the NYC taxi dataset.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <section class="charts">
+
+
+            <!-- HOURLY DEMAND -->
+
+            <div class="chart-card">
+
+                <h3>
+                    📈 Demand by Hour of Day
+                </h3>
+
+                <p>
+                    Total taxi demand recorded for each hour.
+                </p>
+
+
+                <div class="bar-chart">
+
+                    {% for hour, value in hourly_data %}
+
+                    <div class="bar-wrapper">
+
+
+                        <div class="bar-value">
+                            {{ value }}
+                        </div>
+
+
+                        {% if hourly_max > 0 %}
+
+                        <div
+                            class="bar"
+                            style="height:
+                            {{ (value / hourly_max) * 82 }}%;"
+                        ></div>
+
+                        {% else %}
+
+                        <div
+                            class="bar"
+                            style="height: 3px;"
+                        ></div>
+
+                        {% endif %}
+
+
+                        <div class="bar-label">
+                            {{ hour }}
+                        </div>
+
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <p style="text-align:center; margin-top:15px;">
+
+                    Hour of Day →
+                    0 = Midnight,
+                    12 = Noon,
+                    18 = 6 PM
+
+                </p>
+
+            </div>
+
+
+
+            <!-- LOCATION DEMAND -->
+
+            <div class="chart-card">
+
+                <h3>
+                    📍 Top Pickup Locations
+                </h3>
+
+                <p>
+                    Top 10 NYC pickup zones by total taxi demand.
+                </p>
+
+
+                <div class="location-chart">
+
+
+                    {% for location, value in top_location_data %}
+
+
+                    <div class="location-row">
+
+
+                        <div class="location-id">
+
+                            ID {{ location }}
+
+                        </div>
+
+
+                        <div class="location-track">
+
+                            {% if location_max > 0 %}
+
+                            <div
+                                class="location-fill"
+                                style="width:
+                                {{ (value / location_max) * 100 }}%;"
+                            ></div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="location-value">
+
+                            {{ "{:,}".format(value) }}
+
+                        </div>
+
+
+                    </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             MACHINE LEARNING MODEL
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                🧠
+            </div>
+
+            <div>
+
+                <h2>
+                    How the Machine Learning Model Works
+                </h2>
+
+                <p>
+                    A visual explanation of our
+                    Random Forest model.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <section class="model-card">
+
+
+            <div class="model-flow">
+
+
+                <!-- INPUT -->
+
+                <div>
+
+                    <div class="flow-title">
+                        Input Features
+                    </div>
+
+
+                    <div class="features">
+
+                        <div class="feature-pill">
+                            🕐 Hour
+                        </div>
+
+                        <div class="feature-pill">
+                            🗓️ Day
+                        </div>
+
+                        <div class="feature-pill">
+                            📅 Date
+                        </div>
+
+                        <div class="feature-pill">
+                            📍 Location
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ARROW -->
+
+                <div class="arrow">
+                    →
+                </div>
+
+
+
+                <!-- RANDOM FOREST -->
+
+                <div>
+
+                    <div class="flow-title">
+                        Random Forest
+                    </div>
+
+
+                    <div class="trees">
+
+                        <div class="tree">
+
+                            <div class="tree-icon">
+                                🌳
+                            </div>
+
+                            <span>
+                                Tree 1
+                            </span>
+
+                        </div>
+
+
+                        <div class="tree">
+
+                            <div class="tree-icon">
+                                🌳
+                            </div>
+
+                            <span>
+                                Tree 2
+                            </span>
+
+                        </div>
+
+
+                        <div class="tree">
+
+                            <div class="tree-icon">
+                                🌳
+                            </div>
+
+                            <span>
+                                Tree 3
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="model-description">
+
+                        Multiple decision trees learn
+                        different patterns from the training data.
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ARROW -->
+
+                <div class="arrow">
+                    →
+                </div>
+
+
+
+                <!-- OUTPUT -->
+
+                <div>
+
+                    <div class="flow-title">
+                        Final Prediction
+                    </div>
+
+
+                    <div class="final-result">
+
+                        <div class="final-circle">
+
+                            <div class="final-number">
+
+                                {% if prediction is not none %}
+
+                                    {{ prediction }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </div>
+
+                            <p>
+                                taxi trips
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FEATURE IMPORTANCE
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                🎯
+            </div>
+
+            <div>
+
+                <h2>
+                    Feature Importance
+                </h2>
+
+                <p>
+                    What features influenced the
+                    Random Forest model?
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <section class="importance-card">
+
+
+            {% for feature in feature_importance %}
+
+
+            <div class="importance-row">
+
+
+                <div class="importance-name">
+
+                    {{ feature.name }}
+
+                </div>
+
+
+                <div class="importance-track">
+
+                    <div
+                        class="importance-fill"
+                        style="width:
+                         {{ feature.value }}%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="importance-value">
+
+                    {{ feature.value }}%
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            🚕 TaxiPredict
+            &nbsp; • &nbsp;
+            Built using Python, Pandas,
+            Scikit-learn & Flask
+
+            <br><br>
+
+            NYC Yellow Taxi Data • January 2025
+
+        </footer>
+
+
+    </div>
+
+
+</body>
+
+</html>
